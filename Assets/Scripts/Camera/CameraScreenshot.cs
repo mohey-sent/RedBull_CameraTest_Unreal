@@ -1,12 +1,13 @@
+using DG.Tweening;
 using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using ZXing.OneD;
 
 public class CameraScreenshot : Singletons<CameraScreenshot>
 {
     [SerializeField] RawImage screenShotDisplayer;
+    [SerializeField] CanvasGroup flash;
     [SerializeField] bool SavePhotos;
     [SerializeField] int captureX = 100;
     [SerializeField] int captureY = 100;
@@ -16,12 +17,20 @@ public class CameraScreenshot : Singletons<CameraScreenshot>
     public void Capture()
     {
         StartCoroutine(CaptureScreenSection());
+        FlashScreen();
+    }
+    private void FlashScreen()
+    {
+        flash.DOFade(1, 0.1f).OnComplete(() =>
+        {
+            flash.DOFade(0, 0.5f);
+        });
     }
 
     IEnumerator CaptureScreenSection()
     {
         yield return new WaitForEndOfFrame();
-
+        
         Rect captureRect = new Rect(captureX, captureY, captureWidth, captureHeight);
 
         Texture2D screenShot = new Texture2D((int)captureRect.width, (int)captureRect.height, TextureFormat.RGB24, false);

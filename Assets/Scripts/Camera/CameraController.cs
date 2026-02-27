@@ -14,7 +14,9 @@ public class CameraController : Singletons<CameraController>
         backCam = new WebCamTexture(devices[0].name);
         background.texture = backCam;
         backCam.Play();
+
     }
+
     public void StopCamera()
     {
         backCam.Stop();

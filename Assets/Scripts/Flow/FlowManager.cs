@@ -1,17 +1,22 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class FlowManager : MonoBehaviour
 {
+    [SerializeField] GameObject screenShot;
+    [Space]
     [SerializeField] CameraController cameraController;
     [SerializeField] CanvasGroup startBtn;
     [SerializeField] CanvasGroup actionVideCG;
     [SerializeField] VideoPlayer actionVideoVP;
     [SerializeField] VideoPlayer idleVideoVP;
+    [SerializeField] VideoPlayer captureVP;
     [Space]
     [SerializeField] CanvasGroup capturePopUp;
     [SerializeField] float fadeDuration;
@@ -45,13 +50,16 @@ public class FlowManager : MonoBehaviour
     //Un Comment to debug
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-            ShowCapturePopup();
+        if(Input.GetKeyDown(KeyCode.Space))
+            screenShot.SetActive(!screenShot.activeSelf);
         if (Input.GetKeyDown(KeyCode.Escape))
             HideCapturePopup();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            CameraScreenshot.Singleton.Capture();
+        if (Input.GetKeyDown(KeyCode.Tab))
+            captureDelaySeconds = new WaitForSeconds(1000);
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+            captureDelaySeconds = new WaitForSeconds(6);
+        if (Input.GetKeyDown(KeyCode.R))
+            SceneManager.LoadScene(0);
     }
     public void StartActiviationClick()
     {
@@ -69,7 +77,6 @@ public class FlowManager : MonoBehaviour
         ShowCapturePopup();
         yield return captureDelaySeconds;
         CameraScreenshot.Singleton.Capture();
-        cameraController.StopCamera();
         yield return hidePopupDelaySeconds;
         HideCapturePopup();
         yield return qrDelaySeconds;
@@ -77,15 +84,21 @@ public class FlowManager : MonoBehaviour
         yield return restartDelaySeconds;
         ReturnToIdle();
     }
-    public void ShowCapturePopup()
+    private void ShowCapturePopup()
     {
         capturePopUp.DOFade(1, fadeDuration);
         capturePopUp.transform.DOScale(1, popupDuration);
+        captureVP.Play();
     }
-    public void HideCapturePopup()
+    private void HideCapturePopup()
     {
         capturePopUp.DOFade(0, fadeDuration);
-        capturePopUp.transform.DOScale(0, popupDuration).SetDelay(fadeDuration);
+        capturePopUp.transform.DOScale(0, fadeDuration).SetDelay(fadeDuration).OnComplete(()=> 
+        { 
+            captureVP.Stop();
+        });
+
+        cameraController.StopCamera();
     }
     private void ShowQrCode()
     {
