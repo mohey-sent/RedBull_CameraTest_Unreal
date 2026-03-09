@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
-
+using RenderHeads.Media.AVProVideo;
 public class FlowManager : MonoBehaviour
 {
     [SerializeField] GameObject screenShot;
@@ -15,8 +15,9 @@ public class FlowManager : MonoBehaviour
     [SerializeField] CanvasGroup startBtn;
     [SerializeField] CanvasGroup actionVideCG;
     [SerializeField] VideoPlayer actionVideoVP;
-    [SerializeField] VideoPlayer idleVideoVP;
+    [SerializeField] MediaPlayer idleVideoVP;
     [SerializeField] VideoPlayer captureVP;
+    [SerializeField] RenderTexture mainVideoRT;
     [Space]
     [SerializeField] CanvasGroup capturePopUp;
     [SerializeField] float fadeDuration;
@@ -29,6 +30,7 @@ public class FlowManager : MonoBehaviour
     [SerializeField] float hidePopupDelay;
     [SerializeField] float qrShowDelay;
     [SerializeField] float restartDelay;
+    RawImage actionVideoRawImage;
     WaitForSeconds showPopupDelaySeconds;
     WaitForSeconds hidePopupDelaySeconds;
     WaitForSeconds captureDelaySeconds;
@@ -41,6 +43,7 @@ public class FlowManager : MonoBehaviour
     }
     private void SetupParameters()
     {
+        actionVideoRawImage=actionVideoVP.transform.GetComponent<RawImage>();
         showPopupDelaySeconds=new WaitForSeconds(showPopupDelay);
         hidePopupDelaySeconds=new WaitForSeconds(hidePopupDelay);
         captureDelaySeconds=new WaitForSeconds(captureDelay);
@@ -54,6 +57,8 @@ public class FlowManager : MonoBehaviour
             screenShot.SetActive(!screenShot.activeSelf);
         if (Input.GetKeyDown(KeyCode.Escape))
             HideCapturePopup();
+        if(Input.GetKeyDown(KeyCode.Return))
+            CameraScreenshot.Singleton.Capture();
         if (Input.GetKeyDown(KeyCode.Tab))
             captureDelaySeconds = new WaitForSeconds(1000);
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -61,6 +66,7 @@ public class FlowManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(0);
     }
+    Coroutine popSequenceCoroutine;
     public void StartActiviationClick()
     {
         cameraController.PlayCamera();
@@ -69,7 +75,12 @@ public class FlowManager : MonoBehaviour
         actionVideoVP.Play();
         idleVideoVP.Stop();
         actionVideCG.DOFade(1, fadeDuration);
-        StartCoroutine(CO_PopUpssequence());
+        popSequenceCoroutine= StartCoroutine(CO_PopUpssequence());
+    }
+    public void BackToIdleClick()
+    {
+        StopCoroutine(popSequenceCoroutine);
+        ReturnToIdle();
     }
     IEnumerator CO_PopUpssequence()
     {
@@ -102,18 +113,34 @@ public class FlowManager : MonoBehaviour
     }
     private void ShowQrCode()
     {
-        QRcontainer.DOFade(1, fadeDuration);
+        QRcontainer.interactable = true;
+        QRcontainer.DOFade(1, fadeDuration).OnComplete(()=> { QRcontainer.blocksRaycasts = true; });
+
     }
     private void ReturnToIdle()
     {
         actionVideCG.DOFade(0, fadeDuration).OnComplete(() =>
         {
-            actionVideoVP.Stop();
+            StartCoroutine(CO_RefreshMainVideoPlayer());
         });
+
+        QRcontainer.interactable = false;
+        QRcontainer.blocksRaycasts = false;
         QRcontainer.DOFade(0, fadeDuration);
+
         startBtn.DOFade(1, fadeDuration);
         idleVideoVP.Play();
-        actionVideCG.DOFade(0, fadeDuration);
+
         startBtn.interactable = true;
+    }
+    IEnumerator CO_RefreshMainVideoPlayer()
+    {
+        actionVideoVP.Stop();
+        actionVideoVP.targetTexture = null;
+        actionVideoRawImage.texture = null;
+        yield return new WaitForEndOfFrame();
+        mainVideoRT.Release();
+        actionVideoVP.targetTexture = mainVideoRT;
+        actionVideoRawImage.texture = actionVideoVP.targetTexture;
     }
 }

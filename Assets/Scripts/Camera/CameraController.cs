@@ -23,6 +23,7 @@ public class CameraController : Singletons<CameraController>
     }
     public void PlayCamera()
     {
+        backCam.Stop();
         backCam.Play();
     }
 }
