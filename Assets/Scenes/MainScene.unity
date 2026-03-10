@@ -784,7 +784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3025efa0f6182f74db1475621363a28c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hostUrl: http://192.168.70.168:5000/
+  hostUrl: http://192.168.10.139:5000/
   api: api/images/upload
   generatedQrCodeDisplayer: {fileID: 579791863}
 --- !u!1 &764117132
@@ -923,7 +923,9 @@ MonoBehaviour:
     bufferedFrameSelection: 0
     pauseOnPrerollComplete: 0
     forceAudioOutputDeviceName: 
-    preferredFilters: []
+    preferredFilters:
+    - LAV Video Decoder
+    - LAV Audio Decoder
     audioOutput: 0
     audio360ChannelMode: 0
     startWithHighestBitrate: 0
