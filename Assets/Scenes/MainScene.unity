@@ -910,8 +910,8 @@ MonoBehaviour:
       overrideDecryptionKey: 
     videoApi: 1
     useHardwareDecoding: 1
-    useTextureMips: 0
-    use10BitTextures: 0
+    useTextureMips: 1
+    use10BitTextures: 1
     hintAlphaChannel: 0
     useLowLatency: 0
     useCustomMovParser: 0
@@ -1124,7 +1124,9 @@ MonoBehaviour:
   popupDuration: 1.5
   QRcontainer: {fileID: 2153752}
   showPopupDelay: 4
-  captureDelay: 7
+  pauseDelay: 3.55
+  pauseDuration: 2
+  captureDelay: 3.45
   hidePopupDelay: 0.5
   qrShowDelay: 3
   restartDelay: 20
@@ -1845,7 +1847,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 75dde32de297e7145b8cea64513109c5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 58e9c57e3aa909841ba5229817475c6b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1920,7 +1922,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: bc66d51a80290734c9e0ab66460c2582, type: 3}
+  m_Texture: {fileID: 2800000, guid: 6447d4ab0ec299a4d850e8bfcc29b2ac, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2189,7 +2191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -837.5, y: -1131.3999}
+  m_AnchoredPosition: {x: -837.5, y: 1148}
   m_SizeDelta: {x: 61.474, y: 18.78}
   m_Pivot: {x: 0, y: 1}
 --- !u!225 &1891138221
@@ -2398,17 +2400,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1962238117}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.70710576, w: 0.70710784}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1166468360}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2}
-  m_SizeDelta: {x: 326.94, y: 213.4022}
+  m_AnchoredPosition: {x: -157, y: -132.81812}
+  m_SizeDelta: {x: 487.38123, y: 349.4447}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1962238119
 MonoBehaviour:

@@ -11,7 +11,7 @@ public class CameraController : Singletons<CameraController>
         WebCamDevice[] devices = WebCamTexture.devices;
         if (devices.Length == 0) return;
 
-        backCam = new WebCamTexture(devices[0].name);
+        backCam = new WebCamTexture(devices[1].name);
         background.texture = backCam;
         backCam.Play();
 
@@ -19,11 +19,10 @@ public class CameraController : Singletons<CameraController>
 
     public void StopCamera()
     {
-        backCam.Stop();
+        backCam.Pause();
     }
     public void PlayCamera()
     {
-        backCam.Stop();
         backCam.Play();
     }
 }

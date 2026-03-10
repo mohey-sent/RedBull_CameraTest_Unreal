@@ -26,12 +26,16 @@ public class FlowManager : MonoBehaviour
     [Space]
     [Header("Predefined Sequence")]
     [SerializeField] float showPopupDelay;
+    [SerializeField] float pauseDelay;
+    [SerializeField] float pauseDuration;
     [SerializeField] float captureDelay;
     [SerializeField] float hidePopupDelay;
     [SerializeField] float qrShowDelay;
     [SerializeField] float restartDelay;
     RawImage actionVideoRawImage;
     WaitForSeconds showPopupDelaySeconds;
+    WaitForSeconds pauseDelaySeconds;
+    WaitForSeconds pauseDurationSeconds;
     WaitForSeconds hidePopupDelaySeconds;
     WaitForSeconds captureDelaySeconds;
     WaitForSeconds qrDelaySeconds;
@@ -49,6 +53,8 @@ public class FlowManager : MonoBehaviour
         captureDelaySeconds=new WaitForSeconds(captureDelay);
         qrDelaySeconds = new WaitForSeconds(qrShowDelay);
         restartDelaySeconds=new WaitForSeconds(restartDelay);
+        pauseDelaySeconds=new WaitForSeconds(pauseDelay);
+        pauseDurationSeconds=new WaitForSeconds(pauseDuration);
     }
     //Un Comment to debug
     void Update()
@@ -73,7 +79,6 @@ public class FlowManager : MonoBehaviour
         startBtn.interactable = false;
         startBtn.DOFade(0,fadeDuration);
         actionVideoVP.Play();
-        idleVideoVP.Stop();
         actionVideCG.DOFade(1, fadeDuration);
         popSequenceCoroutine= StartCoroutine(CO_PopUpssequence());
     }
@@ -85,7 +90,14 @@ public class FlowManager : MonoBehaviour
     IEnumerator CO_PopUpssequence()
     {
         yield return showPopupDelaySeconds;
+        idleVideoVP.Stop();
         ShowCapturePopup();
+        yield return pauseDelaySeconds;
+        actionVideoVP.Pause();
+        captureVP.Pause();
+        yield return pauseDurationSeconds;
+        actionVideoVP.Play();
+        captureVP.Play();
         yield return captureDelaySeconds;
         CameraScreenshot.Singleton.Capture();
         yield return hidePopupDelaySeconds;
