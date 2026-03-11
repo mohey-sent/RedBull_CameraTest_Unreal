@@ -1,4 +1,6 @@
 using DG.Tweening;
+using MoheyBasicPack.JSON;
+using RenderHeads.Media.AVProVideo;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -6,9 +8,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using RenderHeads.Media.AVProVideo;
 public class FlowManager : MonoBehaviour
 {
+    [SerializeField] JSONReader jsonSettingsReader;
     [SerializeField] GameObject screenShot;
     [Space]
     [SerializeField] CameraController cameraController;
@@ -40,14 +42,18 @@ public class FlowManager : MonoBehaviour
     WaitForSeconds captureDelaySeconds;
     WaitForSeconds qrDelaySeconds;
     WaitForSeconds restartDelaySeconds;
-
-    private void Awake()
+    SettingsData settingsData;
+    private void Start()
     {
         SetupParameters();
     }
     private void SetupParameters()
     {
-        actionVideoRawImage=actionVideoVP.transform.GetComponent<RawImage>();
+        settingsData = (SettingsData)jsonSettingsReader.GetData();
+        pauseDelay=settingsData.pauseDelay;
+        pauseDuration=settingsData.pauseDuration;
+        captureDelay -= pauseDelay;
+
         showPopupDelaySeconds=new WaitForSeconds(showPopupDelay);
         hidePopupDelaySeconds=new WaitForSeconds(hidePopupDelay);
         captureDelaySeconds=new WaitForSeconds(captureDelay);
@@ -55,6 +61,8 @@ public class FlowManager : MonoBehaviour
         restartDelaySeconds=new WaitForSeconds(restartDelay);
         pauseDelaySeconds=new WaitForSeconds(pauseDelay);
         pauseDurationSeconds=new WaitForSeconds(pauseDuration);
+
+        actionVideoRawImage=actionVideoVP.transform.GetComponent<RawImage>();
     }
     //Un Comment to debug
     void Update()

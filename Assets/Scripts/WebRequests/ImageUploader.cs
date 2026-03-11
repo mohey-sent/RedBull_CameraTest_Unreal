@@ -1,3 +1,4 @@
+using MoheyBasicPack.JSON;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,22 @@ using UnityEngine.UI;
 
 public class ImageUploader : Singletons<ImageUploader>
 {
+    [SerializeField] JSONReader jsonSettingsReader;
     [SerializeField] string hostUrl;
-    [SerializeField] string api;
     [SerializeField] RawImage generatedQrCodeDisplayer;
+    string api;
+    SettingsData settingsData;
+    private void Start()
+    {
+        Setup();
+    }
+    private void Setup()
+    {
+        settingsData = (SettingsData)jsonSettingsReader.GetData();
+        hostUrl=hostUrl.Replace("IP",settingsData.hostIp);
+        hostUrl=hostUrl.Replace("PORT",settingsData.hostPort);
+        api = settingsData.ApiPath;
+    }
     public void UploadImage(Texture2D image)
     {
         StartCoroutine(UploadeImage_CO(image));
